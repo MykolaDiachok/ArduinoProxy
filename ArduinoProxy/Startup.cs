@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using ArduinoProxy.Core.Main;
 using Microsoft.OpenApi.Models;
 
 namespace ArduinoProxy

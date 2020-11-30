@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using ArduinoProxy.Core.Main;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 

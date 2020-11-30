@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace ArduinoProxy
+namespace ArduinoProxy.Core.Main
 {
     /// <summary>
     /// ConnectToArduino - the main class for exchange to Arduino over http
@@ -13,14 +12,16 @@ namespace ArduinoProxy
     public class ConnectToArduino
     {
         private readonly ILogger<ConnectToArduino> _logger;
+        private readonly IConfiguration _configuration;
 
         /// <summary>
         /// ctor
         /// </summary>
         /// <param name="logger"></param>
-        public ConnectToArduino(ILogger<ConnectToArduino> logger)
+        public ConnectToArduino(ILogger<ConnectToArduino> logger, IConfiguration configuration)
         {
             _logger = logger;
+            _configuration = configuration;
         }
 
         /// <summary>
@@ -32,9 +33,9 @@ namespace ArduinoProxy
         {
             try
             {
-                const string baseUrl = "http://192.168.1.61";
+                var baseUrl = _configuration.GetValue<string>("ArduinoServer:server"); //["ArduinoServer"];
 
-                using var client = new HttpClient {Timeout = TimeSpan.FromSeconds(10)};
+                using var client = new HttpClient {Timeout = TimeSpan.FromSeconds(_configuration.GetValue<int>("ArduinoServer:connectionTimeout")) };
                 var stringT = baseUrl + parameter;
                 _logger.LogInformation(stringT);
                 using var res = await client.GetAsync(stringT);
