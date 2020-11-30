@@ -10,6 +10,9 @@ using Microsoft.Extensions.Logging;
 
 namespace ArduinoProxy.Controllers
 {
+    /// <summary>
+    /// read and set to Arduino
+    /// </summary>
     [Route("[controller]")]
     [ApiController]
     public class DigitalController : ControllerBase
@@ -19,6 +22,12 @@ namespace ArduinoProxy.Controllers
         private readonly ConnectToArduino _toArduino;
         private const int Expiration = 360;
         private const int SlidingExpiration = Expiration/2;
+        /// <summary>
+        /// ctor
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="cache"></param>
+        /// <param name="toArduino"></param>
         public DigitalController(ILogger<DigitalController> logger, IMemoryCache cache, ConnectToArduino toArduino)
         {
             _logger = logger;
@@ -27,6 +36,11 @@ namespace ArduinoProxy.Controllers
         }
         
         // GET api/<DigitalController>/5
+        /// <summary>
+        /// read status from  Arduino
+        /// </summary>
+        /// <param name="id">pin</param>
+        /// <returns></returns>
         [HttpGet("{id}/r")]
         public async Task<IActionResult> GetR(int id)
         {
@@ -47,8 +61,14 @@ namespace ArduinoProxy.Controllers
             return Ok("0");
         }
 
-        
 
+
+        /// <summary>
+        /// set status to Arduino
+        /// </summary>
+        /// <param name="id">pin</param>
+        /// <param name="value">value 0-off, 1-on</param>
+        /// <returns></returns>
         [HttpGet("{id}/{value}")]
         public async Task<IActionResult> Set(int id, int value)
         {

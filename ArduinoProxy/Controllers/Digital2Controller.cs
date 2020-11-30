@@ -10,6 +10,9 @@ using Microsoft.Extensions.Logging;
 
 namespace ArduinoProxy.Controllers
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [Route("[controller]")]
     [ApiController]
     public class Digital2Controller : ControllerBase
@@ -19,6 +22,12 @@ namespace ArduinoProxy.Controllers
         private readonly ConnectToArduino _toArduino;
         private const int Expiration = 360;
         private const int SlidingExpiration = Expiration/2;
+        /// <summary>
+        /// ctor
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="cache"></param>
+        /// <param name="toArduino"></param>
         public Digital2Controller(ILogger<Digital2Controller> logger, IMemoryCache cache, ConnectToArduino toArduino)
         {
             _logger = logger;
@@ -27,6 +36,11 @@ namespace ArduinoProxy.Controllers
         }
         
         // GET api/<DigitalController>/5
+        /// <summary>
+        /// read reverse status from Arduino
+        /// </summary>
+        /// <param name="id">pin</param>
+        /// <returns></returns>
         [HttpGet("{id:int}/r")]
         public async Task<IActionResult> GetR(int id)
         {
@@ -34,7 +48,7 @@ namespace ArduinoProxy.Controllers
             var answer = await _toArduino.SendQuery($"/digital/{id}/r");
             if (answer.Length == 1)
             {
-                var newval = returnRevertVal(Convert.ToInt16(answer));
+                var newval = ReturnRevertVal(Convert.ToInt16(answer));
                 var cacheExpiryOptions = new MemoryCacheEntryOptions
                 {
                     AbsoluteExpiration = DateTime.Now.AddSeconds(Expiration),
@@ -49,15 +63,21 @@ namespace ArduinoProxy.Controllers
 
         }
 
-        string returnRevertVal(int val)
+        private static string ReturnRevertVal(int val)
         {
             return val == 0 ? "1" : "0";
         }
 
+        /// <summary>
+        /// set revert status to arduino
+        /// </summary>
+        /// <param name="id">pin</param>
+        /// <param name="value">value 0-on, 1-off</param>
+        /// <returns></returns>
         [HttpGet("{id:int}/{value:int}")]
         public async Task<IActionResult> Set(int id, int value)
         {
-            var newval = returnRevertVal(value);
+            var newval = ReturnRevertVal(value);
             var answer = await _toArduino.SendQuery($"/digital/{id}/{newval}");
             var cacheExpiryOptions = new MemoryCacheEntryOptions
             {

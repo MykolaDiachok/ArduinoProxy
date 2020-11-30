@@ -5,14 +5,25 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Serilog;
 using Serilog.Events;
 
 namespace ArduinoProxy
 {
+    /// <summary>
+    /// main
+    /// </summary>
     public class Program
     {
+        private static string _appname = Assembly.GetExecutingAssembly().GetName().Name;
+        private static string _ver = Core.Extensions.Version.GetVersion();
+        /// <summary>
+        /// Main
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
         public static int Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()
@@ -24,7 +35,7 @@ namespace ArduinoProxy
             try
             {
                 Log.Information("Starting app...");
-                Log.Information($"{typeof(Program)} #{Core.Extensions.Version.GetVersion()}");
+                Log.Information($"{_appname} #{_ver}");
                 CreateHostBuilder(args).Build().Run();
                 return 0;
             }
@@ -39,9 +50,20 @@ namespace ArduinoProxy
             }
         }
 
+        /// <summary>
+        /// CreateHostBuilder
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .UseSerilog()
+                .UseSerilog((context, configuration) =>
+                {
+                    configuration.ReadFrom.Configuration(context.Configuration)
+                        .Enrich.WithProperty("Application", _appname)
+                        .Enrich.WithProperty("Environment", Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"))
+                        .Enrich.WithProperty("ApplicationVersion", _ver);
+                })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
