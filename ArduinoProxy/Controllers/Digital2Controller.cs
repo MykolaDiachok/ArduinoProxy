@@ -21,7 +21,7 @@ namespace ArduinoProxy.Controllers
         private readonly IMemoryCache _cache;
         private readonly ConnectToArduino _toArduino;
         private readonly MemoryCacheEntryOptions CacheEntryOptions;
-        private IConfiguration _configuration;
+        private readonly IConfiguration _configuration;
         /// <summary>
         /// ctor
         /// </summary>
@@ -34,8 +34,8 @@ namespace ArduinoProxy.Controllers
             _logger = logger;
             _cache = cache;
             _toArduino = toArduino;
-            var expiration = _configuration.GetValue<int>("Cache:AbsoluteExpirationInSec");
             _configuration = configuration;
+            var expiration = _configuration.GetValue<int>("Cache:AbsoluteExpirationInSec");
             CacheEntryOptions = new MemoryCacheEntryOptions
             {
                 AbsoluteExpiration = DateTime.Now.AddSeconds(expiration),

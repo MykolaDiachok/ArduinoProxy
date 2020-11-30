@@ -21,7 +21,7 @@ namespace ArduinoProxy.Controllers
         private readonly IMemoryCache _cache;
         private readonly ConnectToArduino _toArduino;
         private readonly MemoryCacheEntryOptions CacheEntryOptions;
-        private IConfiguration _configuration;
+        private readonly IConfiguration _configuration;
         /// <summary>
         /// ctor
         /// </summary>
