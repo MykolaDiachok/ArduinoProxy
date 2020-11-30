@@ -18,6 +18,7 @@ namespace ArduinoProxy.Core.Main
         /// ctor
         /// </summary>
         /// <param name="logger"></param>
+        /// <param name="configuration"></param>
         public ConnectToArduino(ILogger<ConnectToArduino> logger, IConfiguration configuration)
         {
             _logger = logger;
